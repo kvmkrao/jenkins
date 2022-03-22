@@ -7,54 +7,48 @@ pipeline {
       steps {
              git 'https://github.com/kvmkrao/jenkins.git'
       }
-      }
+    }
 
     stage('Configure') {
       steps {
           sh 'cmake .'
       }
     }
-     stage('Build') {
+    stage('Build') {
         steps {
           sh 'cmake --build .'
         }
-     }
+    }
 
-     stage('Test') {
-            steps {
-                ctest 'InSearchPath'
+    stage('Test') {
+        steps {
+            ctest 'InSearchPath'
+        }
+    }
+
+    stage('Build image') {
+        steps{
+            script {
+            dockerImage = docker.build dockerimagename
             }
-     }
-
-     stage('Build image') {
-       steps{
-         script {
-           dockerImage = docker.build dockerimagename
-         }
-       }
-     }
+        }
+    }
 
     stage('Pushing Image') {
-      environment {
-               registryCredential = 'dockerhublogin'
-           }
-      steps{
-        script {
-          docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
-            dockerImage.push("latest")
-          }
+        environment {
+            registryCredential = 'dockerhublogin'
+        }
+        steps{
+          script {
+            docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
+              dockerImage.push("latest")
+            }
         }
       }
     }
 
     stage('Deploy') {
-            when {
-                environment name: 'DEPLOY', value: 'true'
-            }
-            steps {
-                sh label: '', returnStatus: true, script: '''cp jenkinsexample ~
-                cp test/testPro ~'''
-            }
-        }
+        sh label: '', returnStatus: true, script: '''cp jenkinsexample ~
+        cp test/testPro ~'''
     }
 }
