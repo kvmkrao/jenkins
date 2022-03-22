@@ -9,6 +9,6 @@ set(CMAKE_CXX_STANDARD 11)
 
 add_executable(jenkinsexample main.cpp helloWorld.cpp helloWorld.h)
 
-include(CTest)
-add_subdirectory(test)
+#include(CTest)
+#add_subdirectory(test)
 
