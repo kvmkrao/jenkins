@@ -11,16 +11,12 @@ pipeline {
 
     stage('Configure') {
       steps {
-        dir('build') {
           sh 'cmake .'
-        }
       }
     }
      stage('Build') {
         steps {
-               dir('Jenkins') {
-                   sh 'cmake --build .'
-               }
+          sh 'cmake --build .'
         }
      }
 
