@@ -1,0 +1,3 @@
+/home/vkotteda/projects/github/jenkins/src/CMakeFiles/rebuild_cache.dir
+/home/vkotteda/projects/github/jenkins/src/CMakeFiles/edit_cache.dir
+/home/vkotteda/projects/github/jenkins/src/CMakeFiles/jenkinsexample.dir
