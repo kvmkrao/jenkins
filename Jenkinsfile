@@ -2,54 +2,65 @@ pipeline {
     agent any
 
     stages {
-
-    stage('Checkout source'){
-      steps {
-             git 'https://github.com/kvmkrao/jenkins.git'
-      }
-    }
-
-    stage('Configure') {
-      steps {
-          sh 'cmake .'
-      }
-    }
-    stage('Build') {
-        steps {
-          sh 'cmake --build .'
-        }
-    }
-
-    stage('Test') {
-        steps {
-            ctest 'InSearchPath'
-        }
-    }
-
-    stage('Build image') {
-        steps{
-            script {
-            dockerImage = docker.build dockerimagename
+        stage('Pull') {
+            steps {
+                echo 'git'
+                git 'https://github.com/kvmkrao/jenkins.git' 
             }
         }
-    }
-
-    stage('Pushing Image') {
-        environment {
-            registryCredential = 'dockerhublogin'
-        }
-        steps{
-          script {
-            docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
-              dockerImage.push("latest")
+        stage('Configure') {
+            steps {
+                dir('build') {
+                    echo 'configure'
+                    //'cmake 'InSearchPath' ''
+                }
             }
         }
-      }
-    }
+    
+        stage('Build') {
+            steps {
+                echo 'build'
+                //sh 'cmake --build .' 
+            }
+        }
 
-    stage('Deploy') {
-        sh label: '', returnStatus: true, script: '''cp jenkinsexample ~
-        cp test/testPro ~'''
+        stage('Test') {
+            steps {
+                echo 'Test'
+                //ctest 'InSearchPath' */
+            }
+        }
+
+        stage('Build image') {
+            steps{
+                script {
+                echo 'docker image'
+                /* dockerImage = docker.build dockerimagename */
+                }   
+            }
+        }
+
+        stage('Pushing Image') {
+            environment {
+                registryCredential = 'dockerhublogin'
+            }
+            steps{
+                script {
+                echo 'registry'
+            /* docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
+              dockerImage.push("latest")  */
+                }
+            }
+        }
+  
+        stage('Deploying App to Kubernetes') {
+            steps {
+                script {
+                    echo 'deploy'    
+                    /* kubernetesDeploy(configs: "deploymentservice.yml", kubeconfigId: "kubernetes") */
+                }
+            }  
+        }
+    
     }
-}
 }
